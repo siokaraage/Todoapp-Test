@@ -40,3 +40,33 @@ func save(todos []Todo) error {
 	}
 	return os.WriteFile(fileName, data, 0644)
 }
+
+func main() {
+	if len(os.Args[1]) < 2 {
+	fmt.Println("使い方: add(内容) | list | done (ID)")
+	os.Exit(1)
+}
+
+todos, err := load()
+if err != nil {
+	fmt.Println("読み込みに失敗しました。", err)
+	os.Exit(1)
+}
+
+switch os.Args[1] {
+case "add":
+	title := strings.Join(os.Args[2:], "")
+	if title == "" {
+		fmt.Println("内容を入力してください")
+		os.Exit(1)
+	}
+
+	maxID := 0
+	for _,t := range todos {
+		if t.ID > maxID {
+		maxID = t.ID
+		}
+	}
+}
+
+}
