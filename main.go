@@ -67,6 +67,51 @@ case "add":
 		maxID = t.ID
 		}
 	}
-}
+	todos = append(todos, Todo{ID: maxID + 1, Title: title})
+	if err := save(todos); err != nil {
+		fmt.Println("保存に失敗しました。", err)
+		os.Exit(1)
+	}
+	fmt.Println("追加しました:", title)
 
+case "list":
+	for _, t := range todos {
+		mark := "[]"
+		if t.Done {
+			mark = "[x]"
+		}
+		fmt.Printf("%d %s %s\n", t.ID, mark, t.Title)
+	}
+
+case "done":
+	if len(os.Args) < 3 {
+		fmt.Println("IDを指定してください")
+		os.Exit(1)
+	}
+id, err := strconv.Atoi(os.Args[2])
+if err != nil {
+	fmt.Println("IDは数字で指定してください")
+	os.Exit(1)
+}
+found := false
+for i := range todos {
+	if todos[i].ID == id {
+		todos[i].Done = true
+		found = true
+	}
+}
+if !found {
+	fmt.Println("そのIDは見つかりません")
+	os.Exit(1)
+}
+if err := save(todos); err != nil {
+	fmt.Println("保存に失敗:", err)
+	os.Exit(1)
+}
+fmt.Println("完了にしました:", id)
+
+default:
+	fmt.Println("不明なコマンドです:", os.Args[1])
+	os.Exit(1)
+}
 }
